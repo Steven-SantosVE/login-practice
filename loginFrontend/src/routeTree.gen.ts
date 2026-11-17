@@ -9,86 +9,141 @@
 // Additionally, you should also exclude this file from your linter and/or formatter to prevent it from being checked or modified.
 
 import { Route as rootRouteImport } from './routes/__root'
-import { Route as IndexRouteImport } from './routes/index'
-import { Route as LoginRouteImport } from './routes/login'
-import { Route as RegisterRouteImport } from './routes/register'
+import { Route as _authenticatedRouteRouteImport } from './routes/__authenticated/route'
+import { Route as _guestRouteRouteImport } from './routes/__guest/route'
+import { Route as _authenticatedIndexRouteImport } from './routes/__authenticated/index'
+import { Route as _guestLoginRouteImport } from './routes/__guest/login'
+import { Route as _guestRegisterRouteImport } from './routes/__guest/register'
 
-const IndexRoute = IndexRouteImport.update({
+const _authenticatedRouteRoute = _authenticatedRouteRouteImport.update({
+  id: '/__authenticated',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const _guestRouteRoute = _guestRouteRouteImport.update({
+  id: '/__guest',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const _authenticatedIndexRoute = _authenticatedIndexRouteImport.update({
   id: '/',
   path: '/',
-  getParentRoute: () => rootRouteImport,
+  getParentRoute: () => _authenticatedRouteRoute,
 } as any)
-const LoginRoute = LoginRouteImport.update({
+const _guestLoginRoute = _guestLoginRouteImport.update({
   id: '/login',
   path: '/login',
-  getParentRoute: () => rootRouteImport,
+  getParentRoute: () => _guestRouteRoute,
 } as any)
-const RegisterRoute = RegisterRouteImport.update({
+const _guestRegisterRoute = _guestRegisterRouteImport.update({
   id: '/register',
   path: '/register',
-  getParentRoute: () => rootRouteImport,
+  getParentRoute: () => _guestRouteRoute,
 } as any)
 
 export interface FileRoutesByFullPath {
-  '/': typeof IndexRoute
-  '/login': typeof LoginRoute
-  '/register': typeof RegisterRoute
+  '/': typeof _authenticatedIndexRoute
+  '/login': typeof _guestLoginRoute
+  '/register': typeof _guestRegisterRoute
 }
 export interface FileRoutesByTo {
-  '/': typeof IndexRoute
-  '/login': typeof LoginRoute
-  '/register': typeof RegisterRoute
+  '/': typeof _authenticatedIndexRoute
+  '/login': typeof _guestLoginRoute
+  '/register': typeof _guestRegisterRoute
 }
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
-  '/': typeof IndexRoute
-  '/login': typeof LoginRoute
-  '/register': typeof RegisterRoute
+  '/__authenticated': typeof _authenticatedRouteRouteWithChildren
+  '/__guest': typeof _guestRouteRouteWithChildren
+  '/__guest/login': typeof _guestLoginRoute
+  '/__guest/register': typeof _guestRegisterRoute
+  '/__authenticated/': typeof _authenticatedIndexRoute
 }
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
   fullPaths: '/' | '/login' | '/register'
   fileRoutesByTo: FileRoutesByTo
   to: '/' | '/login' | '/register'
-  id: '__root__' | '/' | '/login' | '/register'
+  id:
+    | '__root__'
+    | '/__authenticated'
+    | '/__guest'
+    | '/__guest/login'
+    | '/__guest/register'
+    | '/__authenticated/'
   fileRoutesById: FileRoutesById
 }
 export interface RootRouteChildren {
-  IndexRoute: typeof IndexRoute
-  LoginRoute: typeof LoginRoute
-  RegisterRoute: typeof RegisterRoute
+  _authenticatedRouteRoute: typeof _authenticatedRouteRouteWithChildren
+  _guestRouteRoute: typeof _guestRouteRouteWithChildren
 }
 
 declare module '@tanstack/react-router' {
   interface FileRoutesByPath {
-    '/': {
-      id: '/'
+    '/__authenticated': {
+      id: '/__authenticated'
+      path: ''
+      fullPath: '/'
+      preLoaderRoute: typeof _authenticatedRouteRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/__guest': {
+      id: '/__guest'
+      path: ''
+      fullPath: '/'
+      preLoaderRoute: typeof _guestRouteRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/__authenticated/': {
+      id: '/__authenticated/'
       path: '/'
       fullPath: '/'
-      preLoaderRoute: typeof IndexRouteImport
-      parentRoute: typeof rootRouteImport
+      preLoaderRoute: typeof _authenticatedIndexRouteImport
+      parentRoute: typeof _authenticatedRouteRoute
     }
-    '/login': {
-      id: '/login'
+    '/__guest/login': {
+      id: '/__guest/login'
       path: '/login'
       fullPath: '/login'
-      preLoaderRoute: typeof LoginRouteImport
-      parentRoute: typeof rootRouteImport
+      preLoaderRoute: typeof _guestLoginRouteImport
+      parentRoute: typeof _guestRouteRoute
     }
-    '/register': {
-      id: '/register'
+    '/__guest/register': {
+      id: '/__guest/register'
       path: '/register'
       fullPath: '/register'
-      preLoaderRoute: typeof RegisterRouteImport
-      parentRoute: typeof rootRouteImport
+      preLoaderRoute: typeof _guestRegisterRouteImport
+      parentRoute: typeof _guestRouteRoute
     }
   }
 }
 
+interface _authenticatedRouteRouteChildren {
+  _authenticatedIndexRoute: typeof _authenticatedIndexRoute
+}
+
+const _authenticatedRouteRouteChildren: _authenticatedRouteRouteChildren = {
+  _authenticatedIndexRoute: _authenticatedIndexRoute,
+}
+
+const _authenticatedRouteRouteWithChildren =
+  _authenticatedRouteRoute._addFileChildren(_authenticatedRouteRouteChildren)
+
+interface _guestRouteRouteChildren {
+  _guestLoginRoute: typeof _guestLoginRoute
+  _guestRegisterRoute: typeof _guestRegisterRoute
+}
+
+const _guestRouteRouteChildren: _guestRouteRouteChildren = {
+  _guestLoginRoute: _guestLoginRoute,
+  _guestRegisterRoute: _guestRegisterRoute,
+}
+
+const _guestRouteRouteWithChildren = _guestRouteRoute._addFileChildren(
+  _guestRouteRouteChildren,
+)
+
 const rootRouteChildren: RootRouteChildren = {
-  IndexRoute: IndexRoute,
-  LoginRoute: LoginRoute,
-  RegisterRoute: RegisterRoute,
+  _authenticatedRouteRoute: _authenticatedRouteRouteWithChildren,
+  _guestRouteRoute: _guestRouteRouteWithChildren,
 }
 export const routeTree = rootRouteImport
   ._addFileChildren(rootRouteChildren)

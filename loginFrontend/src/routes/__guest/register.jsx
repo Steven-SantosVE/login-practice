@@ -1,0 +1,73 @@
+import { createFileRoute, Link } from '@tanstack/react-router'
+import { useState } from 'react'
+import userService from '../../api/users'
+
+export const Route = createFileRoute('/__guest/register')({
+  component: RouteComponent,
+})
+
+const boxShadow = " shadow-[0_0_10px_2px_rgba(147,51,234,0.6),0_0_10px_2px_rgba(37,99,235,0.4),0_0_10px_2px_rgba(239,68,68,0.25)]"
+
+function RouteComponent() {
+    const [username, setUsername] = useState('');
+    const [password, setPassword] = useState('');
+
+    const clearForm = () => {
+        setUsername('');
+        setPassword('');
+    }
+
+    const handleRegister = async (e) => {
+        e.preventDefault();
+        try {
+            const response = await userService.register(username, password);
+            console.log('User registered successfully:', response);
+            clearForm();
+            // Handle successful registration (e.g., redirect to login page)
+        } catch (error) {
+            console.error('Error registering user:', error);
+            // Handle registration error (e.g., show error message)
+        }
+    }
+
+    return (
+        <div className="flex flex-col min-h-screen w-full h-full items-center">
+        <div className="w-[90vw] h-[56vh] flex justify-center items-center mt-[20%] rounded-3xl">
+            <div id="register-form-container" className={`h-fit w-fit px-7 py-4 bg-gray-700 rounded-4xl ${boxShadow}`}>
+                <div className="relative w-fit">
+                    <div className={`m-3 w-fit rounded-4xl bg-white px-4 py-3 text-[1rem] font-bold text-black ${boxShadow}`}> 
+                        Taskora
+                    </div>        
+                </div>
+                <div className="text-white text-center m-10 mt-18">
+                    <h1 className="text-3xl">
+                    Create an account 
+                    </h1>
+                    <h2>
+                    Flow starts here
+                    </h2>
+                </div>
+                <form className="flex flex-col w-full justify-center items-center rounded-4xl gap-3" onSubmit={handleRegister}>
+                    <input required type="text" placeholder="Username" className="bg-white px-4 py-2 rounded-3xl w-[89%]" value={username} onChange={(e) => setUsername(e.target.value)}/>
+                    <input required type="password" placeholder="Password" className="bg-white px-4 py-2 rounded-3xl w-[89%]" value={password} onChange={(e) => setPassword(e.target.value)}/>
+                    <input type="submit" value="Register" className="mt-3 bg-[#8B5CF6] hover:bg-[#7C4DD6] font-bold text-white px-6 py-3 w-[89%] rounded-4xl hover:cursor-pointer"/>
+                </form>
+                <div className="w-full flex gap-2 m-5 justify-end pr-13 hover:cursor-pointer">
+                    <div className="flex bg-white w-fit p-4 rounded-4xl">
+                        <img className="w-5" src="https://upload.wikimedia.org/wikipedia/commons/3/3c/Google_Favicon_2025.svg" alt="Google Favicon"/>
+                        <p className="place-content-center">oogle</p>
+                    </div>
+                </div>
+                <div className="text-white flex gap-1 m-6 mt-15">
+                    <p>Already have an account?</p>
+                    <Link to="/login" className="underline">Log In</Link>
+                </div>
+                </div>
+
+            <div className="" id="login-image-container">
+
+            </div>
+        </div>
+        </div>
+  )
+}

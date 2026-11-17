@@ -37,6 +37,7 @@ ALLOWED_HOSTS = ["*"]
 REST_FRAMEWORK = {
     'DEFAULT_AUTHENTICATION_CLASSES': (
         "rest_framework.authentication.TokenAuthentication",
+        'rest_framework_simplejwt.authentication.JWTAuthentication',
     ),
     "DEFAULT_PERMISSION_CLASSES": (
         "rest_framework.permissions.IsAuthenticated",
@@ -61,6 +62,7 @@ INSTALLED_APPS = [
     "corsheaders",
     "rest_framework.authtoken",
     "api",
+    'rest_framework_simplejwt.token_blacklist',
 ]
 
 MIDDLEWARE = [
@@ -162,5 +164,7 @@ MAILERS = {
         'BACKEND': 'django.core.mail.backends.console.EmailBackend',
     },
 }
+
+
 
 AUTH_USER_MODEL = 'api.CustomUser'
